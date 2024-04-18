@@ -1,19 +1,36 @@
-# How to make it all run
+# src
 
-## How to install REFPROP on M1
+Run `bronkhorst_processing.py` from the command line to postprocess raw data from Bronkhorst gas flow controllers by calling the following from the main repo directory.
 
-1. `conda create -n refprop10 python=3.10`
-2. `conda activate refprop10`
-3. `pip install six`
-4. `brew install gcc`
-5. `cd` to your `code` directory
-6. `git clone --recursive https://github.com/usnistgov/REFPROP-cmake.git)`
-7. `cd REFPROP-cmake`
-8. Copy the `FORTRAN` directory into the root of the checked out code
-9. Open a console in the root of the cloned repository
-10. `mkdir build`
-11. `cd build`
-12. `where gfortran` - copy the resulting path to the `-DCMAKE_FORTRAN_COMPILER` flag in the next step
-12. `cmake .. -DCMAKE_FORTRAN_COMPILER=/path/to/gfortran -DREFPROP_ARM64=ON -DREFPROP_X8664=OFF -DCMAKE_BUILD_TYPE=Release`
-13. `cmake --build .`
-14. copy the built library `librefprop.dylib` to your REFPROP directory
+Usage:
+`
+    process_raw_bronkhorst_measurements [-h] [--mass_props | --no-mass_props] [--molar_props | --no-molar_props] raw_csv meta_file derived_data_dir
+`
+
+Example:
+`
+    python src/bronkhorst_processing.py --mass_props --molar_props data/raw_data/test.csv data/metadata/test.json data/derived_data
+`
+
+Main function in `src/bronkhorst_processing.py` calculates the values below, averaged per second, for all gases in the system:  
+- mean volumetric flow in ln/min
+- standard deviation of volumetric flow of all fluids in ln/min
+- one standard uncertainty of volumetric flow of all fluids ln/min
+- mean temperature in degree C
+- standard deviation of temperature in degree C
+- one standard uncertainty of temperature in degree C
+- mean pressure in bar(a)
+- standard deviation of pressure in bar(a)
+- one standard uncertainty of pressure in bar(a)
+- mass flow rate for all flow streams and total mass flow in g/min
+- mass fractions for all flow streams (dimensionless)
+- molar flow rate for all flow streams and total molar flow in mol/min
+- mole fractions for all flow streams (dimensionless)
+
+Arguments:  
+    `raw_csv` - input measurement file
+    `meta_file` - file with metadata on measured gases in flow controllers
+    `derived_data_dir` - directory where the processed file of the same name as 'raw_csv' will be saved
+    `mass_props` - flag, will caculate mass-based measurements when set to True
+    `molar_props` - flag, will caculate mole-based measurements when set to True
+

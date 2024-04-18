@@ -7,27 +7,24 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 from ctREFPROP.ctREFPROP import REFPROPFunctionLibrary
 
+if sys.platform == 'linux':
+    os.environ['RPPREFIX'] = r'/etc/REFPROP'
+elif sys.platform == 'darwin':
+    os.environ['RPPREFIX'] = r'/Users/jtkaczuk/codes/REFPROP'
+else:
+    os.environ['RPPREFIX'] = r'c:/Program Files (x86)/REFPROP'
+
 
 class FluidProps(object):
     fluid = str or tuple
 
     def __init__(self, fluid):
-        self.set_root()
-        self.RP = REFPROPFunctionLibrary(self.root)
-        self.RP.SETPATHdll(self.root)
+        self.RP = REFPROPFunctionLibrary(os.environ['RPPREFIX'])
+        self.RP.SETPATHdll(os.environ['RPPREFIX'])
         self.MASS_BASE_SI = self.RP.GETENUMdll(0, "MASS BASE SI").iEnum
         self.MOLAR_BASE_SI = self.RP.GETENUMdll(0, "MOLAR BASE SI").iEnum
         self.fluid = self.set_fluid(fluid)
         self.z = {1.0}
-
-    def set_root(self):
-        if sys.platform == 'linux':
-            self.root = r'/etc/REFPROP'
-        elif sys.platform == 'darwin':
-            self.root = r'/Users/jtkaczuk/codes/REFPROP'
-        else:
-            self.root = r'c:/Program Files (x86)/REFPROP'
-        os.environ['RPPREFIX'] = self.root
 
     def set_fluid(self, fluid):
         return fluid if type(fluid) == str else '{};{}'.format(*fluid)
@@ -283,15 +280,16 @@ def test_HeNe_EOS_implementation():
 
 
 def orifice_test():
-    D_out = 20 # mm
-    D_in = 16 # mm
+    D_out = 75 # mm
+    D_in = 37.5 # mm
     T = 300
     p1 = 1.02e5
     p2 = 1e5
     fluid = 'methane'
     # fluid = 'carbon dioxide'
     orifice = Orifice(fluid, D_out*1e-3, D_in*1e-3)
-    print("{:.2f} g/s".format(orifice.get_mass_flow_rate(p1, p2, T, T)*1e3))
+    m_flow = orifice.get_mass_flow_rate(p1, p2, T, T)
+    print("{:.2f} g/s".format(m_flow*1e3))
 
 
 def main():
