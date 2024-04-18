@@ -115,12 +115,12 @@ class Bronhorst_processing(object):
 
 def test():
     bp = Bronhorst_processing(
-        meta_file="../data/metadata/test.json",
-        raw_csv="../data/raw_data/test.csv")
+        meta_file="../../data/metadata/test.json",
+        raw_csv="../../data/raw_data/test.csv")
     
     bp(mass_props=True,
        molar_props=True,
-       derived_data_dir="../data/derived_data")
+       derived_data_dir="../../data/derived_data")
 
 
 def main():
