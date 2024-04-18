@@ -28,9 +28,9 @@ Main function in `src/bronkhorst_processing.py` calculates the values below, ave
 - mole fractions for all flow streams (dimensionless)
 
 Arguments:  
-    `raw_csv` - input measurement file
-    `meta_file` - file with metadata on measured gases in flow controllers
-    `derived_data_dir` - directory where the processed file of the same name as 'raw_csv' will be saved
-    `mass_props` - flag, will caculate mass-based measurements when set to True
+    `raw_csv` - input measurement file  
+    `meta_file` - file with metadata on measured gases in flow controllers  
+    `derived_data_dir` - directory where the processed file of the same name as 'raw_csv' will be saved  
+    `mass_props` - flag, will caculate mass-based measurements when set to True  
     `molar_props` - flag, will caculate mole-based measurements when set to True
 
