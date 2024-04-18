@@ -4,12 +4,23 @@ Run `bronkhorst_processing.py` from the command line to postprocess raw data fro
 
 Usage:
 ```
-    process_raw_bronkhorst_measurements [-h] [--mass_props | --no-mass_props] [--molar_props | --no-molar_props] raw_csv meta_file derived_data_dir
+    process_raw_bronkhorst_measurements \
+    [-h] \
+    [--mass_props | --no-mass_props] \
+    [--molar_props | --no-molar_props] \
+    raw_csv \
+    meta_file \
+    derived_data_dir
 ```
 
 Example:
 ```
-    python src/mfc/bronkhorst_processing.py --mass_props --molar_props data/raw_data/test.csv data/metadata/test.json data/derived_data
+    python src/mfc/bronkhorst_processing.py \
+        --mass_props \
+        --molar_props \
+        data/raw_data/test.csv \
+        data/metadata/test.json \
+        data/derived_data
 ```
 
 Main function in `src/bronkhorst_processing.py` calculates the values below, averaged per second, for all gases in the system:  
