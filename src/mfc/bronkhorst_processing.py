@@ -9,15 +9,25 @@ import CoolProp as CP
 
 
 class Bronhorst_processing(object):
+    meta_file: str
+    raw_csv: str
+    k : float
+    
     def __init__(self,
                  meta_file,
-                 raw_csv):
+                 raw_csv,
+                 k = 1.96):
         self.csv_name = ntpath.basename(raw_csv)
         self.df_raw = pd.read_csv(raw_csv, sep=",")
         with open(meta_file) as fh:
             self.meta = json.load(fh)
         self.flds = tuple(val["FLD"] for val in self.meta.values())
         self.HEOS = tuple(CP.AbstractState("HEOS", fld) for fld in self.flds)
+        self.set_coverage_factor(k)
+
+    def set_coverage_factor(self, k):
+        """ setter for coverage factor for expanded uncertainty calculations """
+        self.k = k
 
     def get_rhomass(self, idx, p_bar, T_degC):
         """ return fluid density in g/L """
@@ -50,17 +60,26 @@ class Bronhorst_processing(object):
                 if col != "TimeStamp":
                     d[col] = group[col].mean()
                     if "setpoint" not in col.lower():
-                        # calculate standard deviation per second
+                        # calculate standard deviation (per second)
                         d[f"{col} STD"] = group[col].std()
-                        # calculate standard uncertainty per second
+                        # calculate standard uncertainty (per second)
                         d[f"{col} STUNC"] = d[f"{col} STD"] / len(group)**0.5
             df = pd.concat([df, pd.DataFrame(d, index=[i])])
         # calculate total volumetric flow
         df["Total vol. flow (ln/min)"] = sum([df[f"{key}: Flow (ln/min)"] for key in self.meta.keys()])
+        # calculate relative combined uncertainty of total volumetric flow
+        df["Total vol. flow (ln/min) COMB-UNC"] = 0
+        df.loc[df["Total vol. flow (ln/min)"] != 0, "Total vol. flow (ln/min) COMB-UNC"] = (
+            sum([df[f"{key}: Flow (ln/min) STUNC"]**2 for key in self.meta.keys()])**0.5)
         for key in self.meta.keys():
             # calculate volumetric fraction
             df[f"{key}: Vol. fraction"] = 0
             df.loc[df["Total vol. flow (ln/min)"] != 0, f"{key}: Vol. fraction"] = df[f"{key}: Flow (ln/min)"] / df["Total vol. flow (ln/min)"]
+            # calculate relative combined uncertainty of volumatric fraction
+            df[f"{key}: Vol. fraction EXP-COMB-UNC"] = 0
+            df.loc[df[f"{key}: Flow (ln/min)"] != 0, f"{key}: Vol. fraction EXP-COMB-UNC"] = self.k * (
+                (df[f"{key}: Flow (ln/min) STUNC"] / df[f"{key}: Flow (ln/min)"])**2
+                + (df["Total vol. flow (ln/min) COMB-UNC"] / df["Total vol. flow (ln/min)"])**2)**0.5
         return df
 
     def get_mass_fractions(self, df):
@@ -115,12 +134,12 @@ class Bronhorst_processing(object):
 
 def test():
     bp = Bronhorst_processing(
-        meta_file="../../data/metadata/test.json",
-        raw_csv="../../data/raw_data/test.csv")
+        meta_file="data/metadata/test.json",
+        raw_csv="data/raw_data/test.csv")
     
     bp(mass_props=True,
        molar_props=True,
-       derived_data_dir="../../data/derived_data")
+       derived_data_dir="data/derived_data")
 
 
 def main():
