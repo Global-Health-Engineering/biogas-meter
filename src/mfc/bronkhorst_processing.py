@@ -15,19 +15,25 @@ class Bronhorst_processing(object):
     
     def __init__(self,
                  meta_file,
-                 raw_csv,
-                 k = 1.96):
+                 raw_csv
+                 # k = 1.96
+                 ):
         self.csv_name = ntpath.basename(raw_csv)
         self.df_raw = pd.read_csv(raw_csv, sep=",")
+        self.df_raw = self.set_none_to_nan(self.df_raw)
         with open(meta_file) as fh:
             self.meta = json.load(fh)
         self.flds = tuple(val["FLD"] for val in self.meta.values())
         self.HEOS = tuple(CP.AbstractState("HEOS", fld) for fld in self.flds)
-        self.set_coverage_factor(k)
+        # self.set_coverage_factor(k)
 
-    def set_coverage_factor(self, k):
-        """ setter for coverage factor for expanded uncertainty calculations """
-        self.k = k
+    def set_none_to_nan(self, df):
+        """ set None value to all np.nan values """
+        return df.replace({np.nan: None})
+
+    # def set_coverage_factor(self, k):
+    #     """ setter for coverage factor for expanded uncertainty calculations """
+    #     self.k = k
 
     def get_rhomass(self, idx, p_bar, T_degC):
         """ return fluid density in g/L """
@@ -39,48 +45,72 @@ class Bronhorst_processing(object):
         self.HEOS[idx].update(CP.PT_INPUTS, p_bar*1e5, T_degC+273.15)
         return self.HEOS[idx].rhomolar() / 1e3
 
-    def get_per_second_avg_measurements(self):
+    def get_mean_measurements(self, interval):
         # make empty dataframe
         df = pd.DataFrame()
+        
         # copy raw data
         _df = self.df_raw.copy()
 
         # convert strings to datetime objects
         _df["FullTimeStamp"] = pd.to_datetime(_df["TimeStamp"])
-        # round datetime to 1 sec in new column
-        _df["TimeStamp"] = _df["FullTimeStamp"].dt.round("1s")
+        
+        # round datetime to interval in new column
+        _df["TimeStamp"] = _df["FullTimeStamp"].dt.round(interval)
+        
         # remove time zone info in new datetime column
         _df["TimeStamp"] = _df["TimeStamp"].apply(lambda x: x.replace(tzinfo=None))
+        
         # drop full time information
         _df.drop("FullTimeStamp", axis=1, inplace=True)
 
         for i, group in _df.groupby("TimeStamp"):
             d = {}
+
+            # number of measurements per stream
+            for key in self.meta.keys():
+                d[f"{key}: count"] = len([i for i in group[f"{key}: Flow (ln/min)"] if i is not None])
+
             for col in group.columns:
                 if col != "TimeStamp":
+                    # mean values per interval
                     d[col] = group[col].mean()
+                    
                     if "setpoint" not in col.lower():
-                        # calculate standard deviation (per second)
+                        # standard deviation (per interval)
                         d[f"{col} STD"] = group[col].std()
-                        # calculate standard uncertainty (per second)
-                        d[f"{col} STUNC"] = d[f"{col} STD"] / len(group)**0.5
+        
+                        # standard uncertainty (per interval)
+                        d[f"{col} STUNC"] = d[f"{col} STD"] / (d[f"{col.split(': ')[0]}: count"])**0.5
+        
             df = pd.concat([df, pd.DataFrame(d, index=[i])])
-        # calculate total volumetric flow
+        
+        # total volumetric flow
         df["Total vol. flow (ln/min)"] = sum([df[f"{key}: Flow (ln/min)"] for key in self.meta.keys()])
-        # calculate relative combined uncertainty of total volumetric flow
+        
+        # relative combined uncertainty of total volumetric flow
         df["Total vol. flow (ln/min) COMB-UNC"] = 0
         df.loc[df["Total vol. flow (ln/min)"] != 0, "Total vol. flow (ln/min) COMB-UNC"] = (
             sum([df[f"{key}: Flow (ln/min) STUNC"]**2 for key in self.meta.keys()])**0.5)
+        
         for key in self.meta.keys():
             # calculate volumetric fraction
             df[f"{key}: Vol. fraction"] = 0
             df.loc[df["Total vol. flow (ln/min)"] != 0, f"{key}: Vol. fraction"] = df[f"{key}: Flow (ln/min)"] / df["Total vol. flow (ln/min)"]
+        
             # calculate relative combined uncertainty of volumatric fraction
-            df[f"{key}: Vol. fraction EXP-COMB-UNC"] = 0
-            df.loc[df[f"{key}: Flow (ln/min)"] != 0, f"{key}: Vol. fraction EXP-COMB-UNC"] = self.k * (
+            df[f"{key}: Vol. fraction COMB-UNC"] = 0
+            df.loc[df[f"{key}: Flow (ln/min)"] != 0, f"{key}: Vol. fraction COMB-UNC"] = (
                 (df[f"{key}: Flow (ln/min) STUNC"] / df[f"{key}: Flow (ln/min)"])**2
                 + (df["Total vol. flow (ln/min) COMB-UNC"] / df["Total vol. flow (ln/min)"])**2)**0.5
+        
         return df
+
+    def get_per_sec_mean_measurements(self):
+        return self.get_mean_measurements("1s")
+
+    def get_per_min_mean_measurements(self):
+        return self.get_mean_measurements("1min")
 
     def get_mass_fractions(self, df):
         for key, value in self.meta.items():
@@ -90,9 +120,11 @@ class Bronhorst_processing(object):
             df[f"{key}: Mass flow (g/min)"] = df[f"{key}: Flow (ln/min)"] * rhomass
         df["Total mass flow (g/min)"] = sum([df[f"{key}: Mass flow (g/min)"] for key in self.meta.keys()])
         for key in self.meta.keys():
+            
             # calculate mass fraction
             df[f"{key}: Mass fraction"] = 0
             df.loc[df["Total mass flow (g/min)"] != 0, f"{key}: Mass fraction"] = df[f"{key}: Mass flow (g/min)"] / df["Total mass flow (g/min)"]
+        
         return df
 
     def get_molar_fractions(self, df):
@@ -102,14 +134,21 @@ class Bronhorst_processing(object):
                                                             T_degC = x[f"{key}: Temperature (°C)"]), axis=1)
             df[f"{key}: Molar flow (mol/min)"] = df[f"{key}: Flow (ln/min)"] * rhomolar
         df["Total molar flow (mol/min)"] = sum([df[f"{key}: Molar flow (mol/min)"] for key in self.meta.keys()])
+        
         for key in self.meta.keys():
+        
             # calculate molar fraction
             df[f"{key}: Mole fraction"] = 0
             df.loc[df["Total molar flow (mol/min)"] != 0, f"{key}: Mole fraction"] = df[f"{key}: Molar flow (mol/min)"] / df["Total molar flow (mol/min)"]
+        
         return df
 
-    def __call__(self, mass_props=True, molar_props=True, derived_data_dir=None):
-        df = self.get_per_second_avg_measurements()
+    def __call__(self,
+                 sec_avg = False,
+                 mass_props = True,
+                 molar_props = True,
+                 derived_data_dir = None):
+        df = self.get_per_sec_mean_measurements() if sec_avg else self.get_per_min_mean_measurements()
         if mass_props:
             df = self.get_mass_fractions(df)
         if molar_props:
@@ -122,7 +161,7 @@ class Bronhorst_processing(object):
             for col in df.columns:
                 if key in col:
                     new_col_name = val["FLD"] if unique_flds else f'{val["FLD"]}_{val["ID"]}'
-                    name_map[col] = f"{new_col_name} {col.lstrip(f'{key}:')}"
+                    name_map[col] = f"{new_col_name} {col.lstrip(f'{key}:').strip(' ')}"
         # rename columns (swap mass flow controller S/N with fluid name)
         df = df.rename(columns=name_map)
 
@@ -133,13 +172,13 @@ class Bronhorst_processing(object):
 
 
 def test():
-    bp = Bronhorst_processing(
-        meta_file="data/metadata/test.json",
-        raw_csv="data/raw_data/test.csv")
+    bp = Bronhorst_processing(meta_file = "data/metadata/test.json",
+                              raw_csv = "data/raw_data/test.csv")
     
-    bp(mass_props=True,
-       molar_props=True,
-       derived_data_dir="data/derived_data")
+    bp(sec_avg = False,
+       mass_props = True,
+       molar_props = True,
+       derived_data_dir = "data/derived_data")
 
 
 def main():
@@ -149,20 +188,22 @@ def main():
         'raw_csv' - input measurement file
         'meta_file' - file with metadata on measured gases in flow controllers
         'derived_data_dir' - directory where the processed file of the same name as 'raw_csv' will be saved
-        'mass_props' - flag, will caculate mass-based measurements when set to True
-        'molar_props' - flag, will caculate mole-based measurements when set to True
+        'sec_averaging' - flag, calculates mean values per second when passed; calculates mean values per minute (default)
+        'mass_props' - flag, caculates mass-based measurements when passed
+        'molar_props' - flag, caculates mole-based measurements when passed
     """
     parser = argparse.ArgumentParser(prog="process_raw_bronkhorst_measurements", description=info)
     parser.add_argument("raw_csv")
     parser.add_argument("meta_file")
     parser.add_argument("derived_data_dir")
+    parser.add_argument('--sec_averaging', action=argparse.BooleanOptionalAction)
     parser.add_argument('--mass_props', action=argparse.BooleanOptionalAction)
     parser.add_argument('--molar_props', action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
-
     bp = Bronhorst_processing(meta_file = args.meta_file,
                               raw_csv = args.raw_csv)
-    bp(mass_props = args.mass_props,
+    bp(sec_avg = args.sec_averaging,
+       mass_props = args.mass_props,
        molar_props = args.molar_props,
        derived_data_dir = args.derived_data_dir)
 
