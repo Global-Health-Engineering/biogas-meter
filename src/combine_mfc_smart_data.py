@@ -4,7 +4,37 @@ import pandas as pd
 from datetime import datetime
 
 
-def combine_data(ground_truth_dir, smart_biogas_dir, mfc_meta, time_stamps):
+def get_composite_standard_dev(ns, means, stds):
+    """
+    claculate composite standard deviation for the whole dataset from
+    the individual group means and standard deviations according to:
+    http://www.burtonsys.com/climate/composite_standard_deviations.html
+        ns - list of sizes of groups
+        means - list of means of groups
+        stds - list of standard deviations of groups
+    """
+    ns = np.array(ns)
+    means = np.array(means)
+    stds = np.array(stds)
+
+    # grand mean (float)
+    gm = ns * means
+    gm = gm.sum() / ns.sum()
+
+    # Error Sum of Squares of all groups (np.array)
+    essq = stds**2 * np.array([n - 1 for n in ns])
+
+    # group Sum of Squares (np.array)
+    gss = (means - gm)**2 * ns
+
+    # grand variance
+    gv = (essq.sum() + gss.sum()) / (ns.sum() - 1)
+
+    # return composite standard deviations
+    return gv**0.5
+
+
+def combine_data(ground_truth_dir, smart_biogas_dir, mfc_meta, time_stamps, derived_data_dir=None):
     # get fluid names
     with open(mfc_meta) as fh:
         d_mfc = json.load(fh)
@@ -59,28 +89,33 @@ def combine_data(ground_truth_dir, smart_biogas_dir, mfc_meta, time_stamps):
             _df_sb = df_sb[(df_sb.index >= time_start) & (df_sb.index <= time_end)].copy()
             
             # write Smart Biogas measured pressure to tempoprary dataframe
-            _df["Pressure SBG (Pa)"] = _df_sb["Pressure (Pa)"]
+            _df["Pressure SBG [Pa]"] = _df_sb["Pressure (Pa)"]
             
             # convert from Standard Liters Per Hour to Normal Liters Per Minute
             # 1 SLPM = 1 NLPM * (273.15 K / 293.15 K) * (14.696 psi / 14.504 psi)
             # write it to temporary dataframe
-            _df["Flow SBG (ln/min)"] = _df_sb["Flow (lph)"] / 60 * 293.15 / 273.15 * 14.504 / 14.696
+            _df["Flow SBG [ln/min]"] = _df_sb["Flow (lph)"] / 60 * 293.15 / 273.15 * 14.504 / 14.696
 
             # concatenate temporary dataframe to the main dataframe
             df = pd.concat([df, _df], axis=0)
+
+    if derived_data_dir:
+        df.to_csv(os.path.join(derived_data_dir, "combined_measurements.csv"), sep=",")
+
     return df
 
 
 def main():
     ground_truth_dir = "/Users/jtkaczuk/codes/biogas-meter/data/derived_data/ground_truth"
     smart_biogas_dir = "/Users/jtkaczuk/codes/biogas-meter/data/raw_data/smart_biogas"
+    derived_data_dir = "/Users/jtkaczuk/codes/biogas-meter/data/derived_data/combined"
     mfc_meta = "/Users/jtkaczuk/codes/biogas-meter/data/metadata/mfc_meta.json"
     exp_metadata = "/Users/jtkaczuk/codes/biogas-meter/data/metadata/exp1.json"
     df = combine_data(ground_truth_dir = ground_truth_dir,
                       smart_biogas_dir = smart_biogas_dir,
                       mfc_meta = mfc_meta,
-                      time_stamps = exp_metadata)
-    print(df)
+                      time_stamps = exp_metadata,
+                      derived_data_dir = derived_data_dir)
 
 
 if __name__ == "__main__":

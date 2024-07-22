@@ -69,7 +69,7 @@ class Bronhorst_processing(object):
 
             # number of measurements per stream
             for key in self.meta.keys():
-                d[f"{key}: count"] = len([i for i in group[f"{key}: Flow (ln/min)"] if i is not None])
+                d[f"{key}: ground truth count"] = len([i for i in group[f"{key}: Flow (ln/min)"] if i is not None])
 
             for col in group.columns:
                 if col != "TimeStamp":
@@ -81,7 +81,7 @@ class Bronhorst_processing(object):
                         d[f"{col} STD"] = group[col].std()
         
                         # standard uncertainty (per interval)
-                        d[f"{col} STUNC"] = d[f"{col} STD"] / (d[f"{col.split(': ')[0]}: count"])**0.5
+                        d[f"{col} STUNC"] = d[f"{col} STD"] / (d[f"{col.split(': ')[0]}: ground truth count"])**0.5
         
             df = pd.concat([df, pd.DataFrame(d, index=[i])])
         
