@@ -141,7 +141,9 @@ class SBGperInterval(object):
 
     def __call__(self):
         d = {}
-
+        
+        # get point count
+        d["SBG count"] = len(self.df["Flow (lph)"])
         # get mean pressure
         d["Pressure SBG [Pa]"] = self.df["Pressure (Pa)"].mean()
         # get standard deviation of pressure
@@ -153,8 +155,6 @@ class SBGperInterval(object):
         # 1 SLPM = 1 NLPM * (273.15 K / 293.15 K) * (14.696 psi / 14.504 psi)
         # write it to temporary dataframe
         self.df["Flow [ln/min]"] = self.df["Flow (lph)"] / 60 * 293.15 / 273.15 * 14.504 / 14.696
-        # get point count
-        d["SBG count"] = len(self.df["Flow (lph)"])
         # get mean flow
         d["Flow SBG [ln/min]"] = self.df["Flow [ln/min]"].dropna().mean()
         # get standard deviation of flow
@@ -249,6 +249,7 @@ def get_git_root(path):
 
 def main():
     metaData = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "test_exp.json")
+
     mfc_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "mfc")
     sbg_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "smart_biogas")
     derived_dir = os.path.join(get_git_root(os.getcwd()), "data", "derived_data")
