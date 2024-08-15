@@ -1,0 +1,134 @@
+{
+  "mfc": {
+    "123M04971901FD": {
+        "ID": 0,
+        "FLD": "CH4"
+    },
+    "123M05180215PI": {
+        "ID": 1,
+        "FLD": "CO2"
+    }
+  },
+  "measurements": [
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "09:37:00",
+          "time_end/hh:mm:ss": "09:44:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "09:46:00",
+          "time_end/hh:mm:ss": "09:52:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "09:53:00",
+          "time_end/hh:mm:ss": "09:59:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "10:01:00",
+          "time_end/hh:mm:ss": "10:07:00"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "10:09:00",
+          "time_end/hh:mm:ss": "10:15:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "10:18:00",
+          "time_end/hh:mm:ss": "10:24:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "10:26:00",
+          "time_end/hh:mm:ss": "10:32:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "10:34:00",
+          "time_end/hh:mm:ss": "10:39:00"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "11:28:00",
+          "time_end/hh:mm:ss": "11:33:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "11:35:00",
+          "time_end/hh:mm:ss": "11:40:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "11:43:00",
+          "time_end/hh:mm:ss": "11:48:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "11:51:00",
+          "time_end/hh:mm:ss": "11:56:00"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "11:59:00",
+          "time_end/hh:mm:ss": "12:04:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "12:06:00",
+          "time_end/hh:mm:ss": "12:12:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "12:14:00",
+          "time_end/hh:mm:ss": "12:21:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-08",
+          "time_start/hh:mm:ss": "12:22:00",
+          "time_end/hh:mm:ss": "12:27:00"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "11:54:00",
+          "time_end/hh:mm:ss": "12:00:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "12:03:00",
+          "time_end/hh:mm:ss": "12:09:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "12:11:00",
+          "time_end/hh:mm:ss": "12:15:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-13",
+          "time_start/hh:mm:ss": "12:18:00",
+          "time_end/hh:mm:ss": "12:23:00"
+        }
+      ]
+    }
+  ]
+}

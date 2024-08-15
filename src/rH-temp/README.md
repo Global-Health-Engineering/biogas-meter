@@ -6,6 +6,10 @@ CircuitPython driver for the Adafruit AHT10 or AHT20 Humidity and Temperature Se
 pip3 install adafruit-circuitpython-ahtx0
 ```
 
+## Source
+
+https://github.com/adafruit/Adafruit_CircuitPython_AHTx0
+
 ## Usage example
 
 ```

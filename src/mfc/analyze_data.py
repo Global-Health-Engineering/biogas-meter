@@ -153,7 +153,6 @@ class SBGperInterval(object):
 
         # convert from Standard Liters Per Hour to Normal Liters Per Minute
         # 1 SLPM = 1 NLPM * (273.15 K / 293.15 K) * (14.696 psi / 14.504 psi)
-        # write it to temporary dataframe
         self.df["Flow [ln/min]"] = self.df["Flow (lph)"] / 60 * 293.15 / 273.15 * 14.504 / 14.696
         # get mean flow
         d["Flow SBG [ln/min]"] = self.df["Flow [ln/min]"].dropna().mean()
@@ -186,6 +185,7 @@ class AnalyzeAll(object):
         path = d[df_type.lower()]["path"]
         col = d[df_type.lower()]["col"]
         # read data
+        assert os.path.isfile(os.path.join(path, fname))
         df = pd.read_csv(os.path.join(path, fname))
         # convert strings to datetime objects
         df[col] = pd.to_datetime(df[col])
@@ -233,6 +233,9 @@ class AnalyzeAll(object):
                 d.update(mfcperinterval(mass_props=mass_props, molar_props=molar_props))
                 # get Smart Biogas means and stds
                 d.update(sbgperinterval())
+                # calculate relative error of Smart Biogas measurements
+                d["SBG rel-err"] = (d["Total vol. flow (ln/min)"] - d["Flow SBG [ln/min]"]) / d["Total vol. flow (ln/min)"]
+
                 _df = pd.DataFrame(d, index=[i])
                 df = pd.concat([df, _df], axis=0)
 
@@ -248,10 +251,10 @@ def get_git_root(path):
 
 
 def main():
-    metaData = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "test_exp.json")
+    metaData = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "full_sgb_dry_run.json")
 
     mfc_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "mfc")
-    sbg_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "smart_biogas")
+    sbg_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "sbg")
     derived_dir = os.path.join(get_git_root(os.getcwd()), "data", "derived_data")
 
     an = AnalyzeAll(mfc_dir = mfc_dir,
