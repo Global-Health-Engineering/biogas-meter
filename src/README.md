@@ -2,5 +2,5 @@
 
 Directory for project code.
 
-`mfc` subdirectory contains code for data processing from Bronkhorst mass flow controllers.  
-`orifice` subdirectory contains code for calculating and designing the orifice restriction for imposing pressure drop.  
+`acquisition` subdirectory contains code for data acquisition with Arudiono and python.  
+`analysis` subdirectory contains code post-processing and plotting.

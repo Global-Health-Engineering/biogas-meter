@@ -1,0 +1,49 @@
+{
+  "mfc": {
+    "123M04971901FD": {
+        "ID": 0,
+        "FLD": "Air"
+    }
+  },
+  "measurements": [
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:43:30",
+          "time_end/hh:mm:ss": "09:43:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:44:30",
+          "time_end/hh:mm:ss": "09:44:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:45:30",
+          "time_end/hh:mm:ss": "09:45:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:46:30",
+          "time_end/hh:mm:ss": "09:46:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:47:30",
+          "time_end/hh:mm:ss": "09:47:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:48:30",
+          "time_end/hh:mm:ss": "09:48:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-19",
+          "time_start/hh:mm:ss": "09:49:30",
+          "time_end/hh:mm:ss": "09:49:45"
+        }
+      ]
+    }
+  ]
+}
