@@ -1,8 +1,22 @@
 {
   "mfc": {
-    "123M04971901FD": {
-        "ID": 0,
-        "FLD": "Air"
+    "normalizing conditions": {
+      "T_K": 273.15,
+      "p_bara": 1.01325
+    },
+    "sensors": {
+      "123M04971901FD": "CH4",
+      "123M05180215PI": "CO2"
+    }
+  },
+  "sensirion": {
+    "normalizing conditions": {
+      "T_K": 293.15,
+      "p_bara": 1.01325
+    },
+    "sensors": {
+      "2403000107": "dry",
+      "2403000076": "wet"
     }
   },
   "measurements": [

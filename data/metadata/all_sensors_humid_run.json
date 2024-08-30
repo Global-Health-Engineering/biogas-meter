@@ -1,0 +1,315 @@
+{
+  "mfc": {
+    "normalizing conditions": {
+      "T_K": 273.15,
+      "p_bara": 1.01325
+    },
+    "sensors": {
+      "123M04971901FD": "CH4",
+      "123M05180215PI": "CO2"
+    }
+  },
+  "sbg": {
+    "normalizing conditions": {
+      "T_K": 292.15,
+      "p_bara": 0.966
+    }
+  },
+  "sensirion": {
+    "normalizing conditions": {
+      "T_K": 293.15,
+      "p_bara": 1.01325
+    },
+    "sensors": {
+      "2403000107": "dry",
+      "2403000076": "wet"
+    }
+  },
+  "measurements": [
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:22:40",
+          "time_end/hh:mm:ss": "13:23:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:25:40",
+          "time_end/hh:mm:ss": "13:26:10"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:28:40",
+          "time_end/hh:mm:ss": "13:29:20"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:32:00",
+          "time_end/hh:mm:ss": "13:33:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:35:30",
+          "time_end/hh:mm:ss": "13:36:30"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:38:30",
+          "time_end/hh:mm:ss": "13:39:50"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:41:30",
+          "time_end/hh:mm:ss": "13:43:10"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:45:00",
+          "time_end/hh:mm:ss": "13:46:20"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:48:00",
+          "time_end/hh:mm:ss": "13:49:40"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:52:00",
+          "time_end/hh:mm:ss": "13:53:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:55:30",
+          "time_end/hh:mm:ss": "13:56:15"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "13:58:00",
+          "time_end/hh:mm:ss": "13:59:30"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:01:15",
+          "time_end/hh:mm:ss": "14:02:50"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:04:10",
+          "time_end/hh:mm:ss": "14:06:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:08:10",
+          "time_end/hh:mm:ss": "14:09:15"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:14:30",
+          "time_end/hh:mm:ss": "14:15:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:18:00",
+          "time_end/hh:mm:ss": "14:18:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:24:30",
+          "time_end/hh:mm:ss": "14:24:50"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:27:00",
+          "time_end/hh:mm:ss": "14:28:30"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:30:45",
+          "time_end/hh:mm:ss": "14:32:05"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:35:25",
+          "time_end/hh:mm:ss": "14:35:50"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:43:00",
+          "time_end/hh:mm:ss": "14:43:40"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:46:45",
+          "time_end/hh:mm:ss": "14:47:20"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:50:40",
+          "time_end/hh:mm:ss": "14:51:00"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:55:40",
+          "time_end/hh:mm:ss": "14:56:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "14:59:00",
+          "time_end/hh:mm:ss": "14:59:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:03:10",
+          "time_end/hh:mm:ss": "15:03:30"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:06:40",
+          "time_end/hh:mm:ss": "15:07:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:09:50",
+          "time_end/hh:mm:ss": "15:10:20"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:13:20",
+          "time_end/hh:mm:ss": "15:13:40"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:17:45",
+          "time_end/hh:mm:ss": "15:18:05"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:21:00",
+          "time_end/hh:mm:ss": "15:21:30"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:24:00",
+          "time_end/hh:mm:ss": "15:24:45"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:28:00",
+          "time_end/hh:mm:ss": "15:28:20"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:31:00",
+          "time_end/hh:mm:ss": "15:31:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:34:35",
+          "time_end/hh:mm:ss": "15:34:55"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:38:10",
+          "time_end/hh:mm:ss": "15:38:30"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:41:20",
+          "time_end/hh:mm:ss": "15:41:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:44:55",
+          "time_end/hh:mm:ss": "15:45:15"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:48:25",
+          "time_end/hh:mm:ss": "15:48:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:51:50",
+          "time_end/hh:mm:ss": "15:52:10"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:55:00",
+          "time_end/hh:mm:ss": "15:55:20"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "15:58:25",
+          "time_end/hh:mm:ss": "15:58:45"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "16:01:30",
+          "time_end/hh:mm:ss": "16:02:00"
+        },
+        {
+          "date/yyyy-mm-dd": "2024-08-23",
+          "time_start/hh:mm:ss": "16:04:50",
+          "time_end/hh:mm:ss": "16:05:10" 
+        }
+      ]
+    }
+  ]
+}

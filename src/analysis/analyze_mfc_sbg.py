@@ -52,6 +52,20 @@ class Analyze_MFC_SBG(object):
         df.drop("UNIX Timestamp", axis=1, inplace=True)
         return df
 
+    def get_Vs_from_Vmfc(self, V):
+        """
+        Bronkhorst: 273.15 K and 1.01325 Pa
+        Standard: 273.15 K and 1e5 Pa
+        """
+        return V * (1.01325 / 1) * (273.15 / 273.15)
+
+    def get_Vs_from_Vsbg(self, V):
+        """
+        Smart Biogas meter: 298.15 K and 1.01325 Pa
+        Standard: 273.15 K and 1e5 Pa
+        """
+        return V * (1.01325 / 1) * (273.15 / 298.15)
+
     def get_interval_df(self, df, stamp):
         time_start = datetime.strptime(f"{stamp['date/yyyy-mm-dd']} {stamp['time_start/hh:mm:ss']}", "%Y-%m-%d %H:%M:%S")
         time_end = datetime.strptime(f"{stamp['date/yyyy-mm-dd']} {stamp['time_end/hh:mm:ss']}", "%Y-%m-%d %H:%M:%S")
@@ -80,8 +94,10 @@ class Analyze_MFC_SBG(object):
                 d.update(mfcperinterval(mass_props=mass_props, molar_props=molar_props))
                 # get Smart Biogas means and stds
                 d.update(sbgperinterval())
+                # temp
+                d["Total STP vol. flow (ls/min)"] = self.get_Vs_from_Vmfc(d["Total vol. flow (ln/min)"])
                 # calculate relative error of Smart Biogas measurements
-                d["SBG rel-err"] = (d["Total vol. flow (ln/min)"] - d["Flow SBG (ln/min)"]) / d["Total vol. flow (ln/min)"]
+                d["SBG rel-err"] = (d["Total STP vol. flow (ls/min)"] - d["STP flow SBG (ls/min)"]) / d["Total STD vol. flow (ls/min)"]
 
                 _df = pd.DataFrame(d, index=[i])
                 df = pd.concat([df, _df], axis=0)
@@ -98,7 +114,7 @@ def get_git_root(path):
 
 
 def main():
-    metaData = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "full_sgb_dry_run.json")
+    metaData = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "full_sbg_dry_run.json")
     mfc_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "mfc")
     sbg_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "sbg")
     derived_dir = os.path.join(get_git_root(os.getcwd()), "data", "derived_data")

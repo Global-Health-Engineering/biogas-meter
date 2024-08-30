@@ -86,9 +86,26 @@ class Analyze_MFC_Sen_AHT(object):
         time_end = datetime.strptime(f"{stamp['date/yyyy-mm-dd']} {stamp['time_end/hh:mm:ss']}", "%Y-%m-%d %H:%M:%S")
         return df[(df.index >= time_start) & (df.index <= time_end)].copy()
 
-    def convert_lspm_to_lnpm(self, V_lspm, T_degC, p_bara):
-        # convert from Standard Liters Per Minute to Normal Liters Per Minute
-        return V_lspm * 273.15 / (273.15 + T_degC) * p_bara / 1.01325
+    def get_Vs_from_Vsens(self, V):
+        """
+        Sensirion: 293.15 K and 1.01325 Pa
+        Standard: 273.15 K and 1e5 Pa
+        """
+        return V * (1.01325 / 1) * (273.15 / 293.15)
+
+    def get_Vs_from_Vmfc(self, V):
+        """
+        Bronkhorst: 273.15 K and 1.01325 Pa
+        Standard: 273.15 K and 1e5 Pa
+        """
+        return V * (1.01325 / 1) * (273.15 / 273.15)
+
+    def get_Vs_from_Vsbg(self, V):
+        """
+        Smart Biogas meter: 298.15 K and 1.01325 Pa
+        Standard: 273.15 K and 1e5 Pa
+        """
+        return V * (1.01325 / 1) * (273.15 / 298.15)
 
     def __call__(self, mass_props=False, molar_props=False, derived_dir=None):
         date = None
@@ -120,9 +137,8 @@ class Analyze_MFC_Sen_AHT(object):
                 _df = pd.DataFrame(d, index=[i])
                 df = pd.concat([df, _df], axis=0)
 
-        df["Sensirion Vol. flow (ln/min)"] = self.convert_lspm_to_lnpm(V_lspm = df["Sensirion Vol. flow (ls/min)"],
-                                                                       T_degC = df["Sensirion T (deg C)"],
-                                                                       p_bara = df["Air Pressure outlet (bar(a))"])
+        df["Sensirion STP flow (ls/min)"] = self.get_Vs_from_Vsens(df["Sensirion Vol. flow (ls/min)"])
+        df["Air STP flow (ln/min)"] = self.get_Vs_from_Vmfc(df["Air Flow (ln/min)"])
 
         if derived_dir:
             fname = os.path.basename(self.metaData)
