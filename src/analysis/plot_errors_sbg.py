@@ -222,7 +222,7 @@ def plot_humid_rel_and_abs_unc():
 
     for rh, ax_pair in zip(rh_ranges, ax_pairs):
         _df = df[(df["AHT Humidity (%rH)"] >= rh[0]) & (df["AHT Humidity (%rH)"] <= rh[1])].copy()
-        print(f"{rh} %rh: {100*_df['SBG rel-err'].abs().mean():.2f}% error")
+        print(f"{_df['AHT Humidity (%rH)'].abs().mean():.2f} %rh: {100*_df['SBG rel-err'].abs().mean():.2f} % mean abs. error")
         ax_pair[0].plot(x, x, linestyle=":", color="k")
         ax_pair[0].errorbar(_df["Total vol. flow (ls/min)"], _df["Flow SBG (ls/min)"],
                             xerr = 1.96*_df["Total vol. flow (ls/min) COMB-UNC"],
@@ -273,7 +273,7 @@ def plot_humid_rel_and_abs_unc():
     ax2.set_title(r"$72 \pm 5~{\rm \%rh}$")
 
     ax0.set_ylabel(r"$\dot{V}_{\rm sbg}~/~{\rm l_s~min^{-1}}$")
-    ax4.set_xlabel(r"$\dot{V}~/~{\rm l_s~min^{-1}}$")
+    ax4.set_xlabel(r"$\dot{V}_{\rm ref}~/~{\rm l_s~min^{-1}}$")
     ax3.set_ylabel(r"$100~(\dot{V}_{\rm ref} - \dot{V}_{\rm sbg})~\dot{V}_{\rm ref}^{-1}$")
     ax3.set_yscale("symlog")
     plt.gca().yaxis.set_minor_locator(MinorSymLogLocator(1e-1))

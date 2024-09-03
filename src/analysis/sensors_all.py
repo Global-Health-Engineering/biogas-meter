@@ -452,6 +452,61 @@ class CompositionSensor(object):
         return df_res
 
 
+class YF201(object):
+    meta_data: str
+    raw_data_dir: str
+
+    def __init__(self,
+                 meta_data,
+                 raw_data_dir = os.path.join(get_git_root(os.getcwd()), "data", "raw_data", "turbine-flow")):
+        self.meta_data = meta_data
+        with open(meta_data) as fh:
+            self.meta = json.load(fh)
+        self.raw_data_dir = raw_data_dir
+
+    def set_df(self, fname):
+        self.df = pd.read_csv(os.path.join(self.raw_data_dir, fname), index_col = "Datetime")
+        self.df.index = pd.to_datetime(self.df.index)
+        self.df.index.name = None
+
+    def get_interval_df(self, stamp):
+        time_start = datetime.strptime(f"{stamp['date/yyyy-mm-dd']} {stamp['time_start/hh:mm:ss']}", "%Y-%m-%d %H:%M:%S")
+        time_end = datetime.strptime(f"{stamp['date/yyyy-mm-dd']} {stamp['time_end/hh:mm:ss']}", "%Y-%m-%d %H:%M:%S")
+        return self.df[(self.df.index >= time_start) & (self.df.index <= time_end)].copy()
+
+    def get_mean_std_stunc(self, df, d_res=None):
+        if d_res is None:
+            d_res = {}
+        d_res["YF201 count"] = len([i for i in df["Pulse count"] if i is not np.nan])
+        d_res["YF201 pulses"] = df["Pulse count"].mean()
+        d_res["YF201 pulses STD"] = df["Pulse count"].std()
+        d_res["YF201 pulses STUNC"] = d_res["YF201 pulses STD"] / (d_res["YF201 count"])**0.5
+        return d_res
+
+    def __call__(self, derived_dir=None):
+        date = None
+        df_res = pd.DataFrame()
+        for i, m in enumerate(self.meta["measurements"]):
+            for j, stamp in enumerate(m["stamps"]):
+                if stamp["date/yyyy-mm-dd"] != date:
+                    date = stamp["date/yyyy-mm-dd"]
+                    self.set_df(f"{date}.csv")
+                df_j = self.get_interval_df(stamp)
+
+                d_res = {}
+                d_res["date/yyyy-mm-dd"] = stamp["date/yyyy-mm-dd"]
+                d_res["time_start/hh:mm:ss"] = stamp["time_start/hh:mm:ss"]
+                d_res["time_end/hh:mm:ss"] = stamp["time_end/hh:mm:ss"]
+                # get means, stds, and uncertainty for given interval
+                d_res = self.get_mean_std_stunc(df_j, d_res=d_res)
+                _df = pd.DataFrame(d_res, index=[i+j])
+                df_res = pd.concat([df_res, _df], axis=0)
+        if derived_dir:
+            fname = os.path.basename(self.meta_data)
+            df_res.to_csv(os.path.join(derived_dir, f"{fname.split('.')[0]}_YF201.csv"), sep=",", index=False)
+        return df_res
+
+
 def sbg_dry_run():
     meta_data = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "sbg_dry_run.json")
     derived_data_dir = os.path.join(get_git_root(os.getcwd()), "data", "derived_data")
@@ -520,9 +575,22 @@ def composition_sensor_calibration():
     df.to_csv(os.path.join(derived_data_dir, "composition_calibration.csv"), sep=",")
 
 
+def yf201_turbine_sensor_calibration():
+    meta_data = os.path.join(get_git_root(os.getcwd()), "data", "metadata", "all_sensors_humid_run.json")
+    derived_data_dir = os.path.join(get_git_root(os.getcwd()), "data", "derived_data")
+    dfm = MassFlowControllers(meta_data).__call__()
+    dfh = AHT20(meta_data).__call__()
+    dfy = YF201(meta_data).__call__()
+    dfm.set_index(["date/yyyy-mm-dd", "time_start/hh:mm:ss", "time_end/hh:mm:ss"], inplace=True)
+    dfh.set_index(["date/yyyy-mm-dd", "time_start/hh:mm:ss", "time_end/hh:mm:ss"], inplace=True)
+    dfy.set_index(["date/yyyy-mm-dd", "time_start/hh:mm:ss", "time_end/hh:mm:ss"], inplace=True)
+    df = dfm.join(dfh, how="left").join(dfy, how="left")
+    df.to_csv(os.path.join(derived_data_dir, "yf201_calibration.csv"), sep=",")
+
 if __name__ == "__main__":
     # sensirion_test()
     # sbg_dry_run()
     # sbg_humid_run()
     # merge_dry_and_humid_sbg()
-    composition_sensor_calibration()
+    # composition_sensor_calibration()
+    yf201_turbine_sensor_calibration()
